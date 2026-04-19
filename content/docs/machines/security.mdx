@@ -20,22 +20,27 @@ This separation is intentional. You can inspect every command type, execution pa
 The agent receives typed commands from the server during check-ins. All recognized command types are handled in `internal/commands/executor.go`. Unknown command types are explicitly rejected.
 
 **Runtime and model management**
+
 - `install_runtime` / `uninstall_runtime` / `restart_runtime`
 - `pull_model` / `start_model` / `stop_model` / `remove_model` / `build_model`
 - `install_tool` / `uninstall_tool`
 
 **Training**
+
 - `install_trainer` / `uninstall_trainer` / `start_training` / `stop_training` / `training_status` / `export_checkpoint`
 
 **Harnesses and orchestrators**
+
 - `run_harness_exec` — run a supported AI coding agent (Codex CLI, Goose, Claude Code, Aider, etc.)
 - `harness_login` / `sync_harnesses`
 - `run_orchestrator_exec` — run an orchestrator binary (LangChain, AutoGen, etc.)
 
 **Operations**
+
 - `health_check` / `model_eval` / `nccl_test` / `cancel_command`
 
 **Agent lifecycle**
+
 - `update_agent` — download and install a newer binary (checksum-verified)
 - `self_shutdown` — shut down the machine (only if the operator has configured this)
 - `uninstall_agent`
@@ -91,10 +96,10 @@ The agent writes a newline-delimited JSON audit log of every server-originated c
 
 Default paths:
 
-| Context | Path |
-|---------|------|
-| Linux (root) | `/var/log/mantler/audit.log` |
-| Linux (non-root) / macOS | `~/.mantler/audit.log` |
+| Context                  | Path                         |
+| ------------------------ | ---------------------------- |
+| Linux (root)             | `/var/log/mantler/audit.log` |
+| Linux (non-root) / macOS | `~/.mantler/audit.log`       |
 
 Each line records the command type, outcome, whether it was destructive, and any denial or failure reason.
 
@@ -137,6 +142,7 @@ The `mantler update apply` command and the daemon's `update_agent` path both ver
 Please do not report security vulnerabilities through public GitHub issues.
 
 Email **security@mantler.dev** with:
+
 - A description of the vulnerability
 - Steps to reproduce
 - The version of `mantlerd` you are running (`mantler version`)

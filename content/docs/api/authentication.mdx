@@ -75,16 +75,16 @@ print(response.choices[0].message.content)
 **Node.js (openai SDK):**
 
 ```typescript
-import OpenAI from 'openai';
+import OpenAI from "openai";
 
 const client = new OpenAI({
-  apiKey: 'mk_live_YOUR_KEY',
-  baseURL: 'https://api.mantler.ai/v1',
+  apiKey: "mk_live_YOUR_KEY",
+  baseURL: "https://api.mantler.ai/v1",
 });
 
 const response = await client.chat.completions.create({
-  model: 'YOUR_MODEL_ID',
-  messages: [{ role: 'user', content: 'Hello' }],
+  model: "YOUR_MODEL_ID",
+  messages: [{ role: "user", content: "Hello" }],
 });
 console.log(response.choices[0].message.content);
 ```

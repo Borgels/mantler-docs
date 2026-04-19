@@ -7,10 +7,10 @@ description: Configure mantlerd via the agent.json config file or the mantler co
 
 **Default paths:**
 
-| Context | Path |
-|---------|------|
-| Linux (root) | `/etc/mantler/agent.json` |
-| Linux (non-root) / macOS | `~/.mantler/agent.json` |
+| Context                  | Path                      |
+| ------------------------ | ------------------------- |
+| Linux (root)             | `/etc/mantler/agent.json` |
+| Linux (non-root) / macOS | `~/.mantler/agent.json`   |
 
 ---
 
@@ -25,12 +25,12 @@ description: Configure mantlerd via the agent.json config file or the mantler co
 }
 ```
 
-| Field | Description |
-|-------|-------------|
-| `serverUrl` | Control-plane URL. Defaults to the Mantler hosted service. |
-| `token` | Machine-scoped bearer token. Generated when you add a machine in the web app. |
-| `machineId` | Stable machine identifier. Generated alongside the token. |
-| `interval` | Check-in interval. Default `30s`. |
+| Field       | Description                                                                   |
+| ----------- | ----------------------------------------------------------------------------- |
+| `serverUrl` | Control-plane URL. Defaults to the Mantler hosted service.                    |
+| `token`     | Machine-scoped bearer token. Generated when you add a machine in the web app. |
+| `machineId` | Stable machine identifier. Generated alongside the token.                     |
+| `interval`  | Check-in interval. Default `30s`.                                             |
 
 ---
 

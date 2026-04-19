@@ -77,15 +77,15 @@ Content-Type: application/json
 }
 ```
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `model` | string | Yes | Model ID from `/v1/models` |
-| `messages` | array | Yes | Conversation history |
-| `stream` | boolean | No | Stream tokens as SSE. Default `false`. |
-| `temperature` | number | No | Sampling temperature (0–2). Default `1`. |
-| `max_tokens` | integer | No | Max tokens to generate. |
-| `top_p` | number | No | Nucleus sampling. Default `1`. |
-| `stop` | string\|array | No | Stop sequences. |
+| Parameter     | Type          | Required | Description                              |
+| ------------- | ------------- | -------- | ---------------------------------------- |
+| `model`       | string        | Yes      | Model ID from `/v1/models`               |
+| `messages`    | array         | Yes      | Conversation history                     |
+| `stream`      | boolean       | No       | Stream tokens as SSE. Default `false`.   |
+| `temperature` | number        | No       | Sampling temperature (0–2). Default `1`. |
+| `max_tokens`  | integer       | No       | Max tokens to generate.                  |
+| `top_p`       | number        | No       | Nucleus sampling. Default `1`.           |
+| `stop`        | string\|array | No       | Stop sequences.                          |
 
 **Non-streaming response:**
 
@@ -141,10 +141,10 @@ The API returns standard HTTP status codes with a JSON error body:
 }
 ```
 
-| Status | Meaning |
-|--------|---------|
-| `401` | Invalid or missing API key |
-| `403` | Key does not have access to the requested model |
-| `404` | Model not found or not deployed |
-| `429` | Rate limit exceeded |
-| `503` | Machine offline or runtime unavailable |
+| Status | Meaning                                         |
+| ------ | ----------------------------------------------- |
+| `401`  | Invalid or missing API key                      |
+| `403`  | Key does not have access to the requested model |
+| `404`  | Model not found or not deployed                 |
+| `429`  | Rate limit exceeded                             |
+| `503`  | Machine offline or runtime unavailable          |

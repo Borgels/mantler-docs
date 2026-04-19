@@ -1,10 +1,4 @@
 {
   "title": "Machines",
-  "pages": [
-    "index",
-    "install",
-    "configuration",
-    "cli",
-    "security"
-  ]
+  "pages": ["index", "install", "configuration", "cli", "security"]
 }

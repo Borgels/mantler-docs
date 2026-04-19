@@ -52,14 +52,14 @@ The machine will appear as online in the web app within a few seconds.
 
 Open the **Forge** in the Mantler web app. A stack (mantle) is built from layers:
 
-| Layer | Role | Required |
-|-------|------|----------|
-| Machine | The machine to deploy to | Yes |
-| Runtime | Inference runtime (Ollama, vLLM, llama.cpp, MLX, …) | Yes |
-| Model | The language model | Yes |
-| Harness | Prompt routing / tool wrapper | Optional |
-| Orchestrator | Multi-step orchestrator | Optional |
-| Endpoint | OpenAI-compatible endpoint exposure | Optional, but needed for API access |
+| Layer        | Role                                                | Required                            |
+| ------------ | --------------------------------------------------- | ----------------------------------- |
+| Machine      | The machine to deploy to                            | Yes                                 |
+| Runtime      | Inference runtime (Ollama, vLLM, llama.cpp, MLX, …) | Yes                                 |
+| Model        | The language model                                  | Yes                                 |
+| Harness      | Prompt routing / tool wrapper                       | Optional                            |
+| Orchestrator | Multi-step orchestrator                             | Optional                            |
+| Endpoint     | OpenAI-compatible endpoint exposure                 | Optional, but needed for API access |
 
 Select your machine from the Machine slot, pick a runtime, pick a model. The compatibility panel shows in real time whether the combination will work on your hardware.
 

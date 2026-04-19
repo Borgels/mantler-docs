@@ -1,11 +1,4 @@
 {
   "title": "Mantler",
-  "pages": [
-    "index",
-    "getting-started",
-    "machines",
-    "stacks",
-    "api",
-    "security"
-  ]
+  "pages": ["index", "getting-started", "machines", "stacks", "api", "security"]
 }
