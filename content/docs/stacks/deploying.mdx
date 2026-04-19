@@ -14,7 +14,7 @@ Clicking **Deploy** triggers the following sequence:
 1. The control plane sends commands to `mantlerd` on the target machine.
 2. The runtime is installed (if not already present).
 3. The model is pulled to the machine.
-4. If a **Portal** layer is included, the endpoint becomes active.
+4. If a **Endpoint** layer is included, the endpoint becomes active.
 
 You can monitor the deployment on the machine detail page in the web app, or with the CLI:
 
@@ -26,7 +26,7 @@ mantler info
 
 ## Endpoint activation
 
-When the Portal layer is active and the model is loaded, the mantle's model ID becomes available in `/v1/models` and accepts chat completions requests.
+When the Endpoint layer is active and the model is loaded, the mantle's model ID becomes available in `/v1/models` and accepts chat completions requests.
 
 ## Redeploying and updating
 
