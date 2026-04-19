@@ -1,5 +1,8 @@
 # mantler-docs
 
+[![CI](https://github.com/Borgels/mantler-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/Borgels/mantler-docs/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Documentation site for [Mantler](https://mantler.ai) — deployed at [docs.mantler.ai](https://docs.mantler.ai).
 
 Built with [Fumadocs](https://fumadocs.vercel.app) and Next.js.
