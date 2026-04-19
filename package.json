@@ -13,6 +13,7 @@
   "dependencies": {
     "fumadocs-core": "^16",
     "fumadocs-mdx": "^14",
+    "fumadocs-openapi": "^10.7.1",
     "fumadocs-ui": "^16",
     "next": "^16",
     "react": "^19",

@@ -1,4 +1,4 @@
 {
   "title": "API",
-  "pages": ["index", "authentication", "endpoints", "usage-and-limits"]
+  "pages": ["index", "authentication", "endpoints", "usage-and-limits", "openapi-reference"]
 }
