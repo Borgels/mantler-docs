@@ -14,7 +14,7 @@ Mantler is designed with a clear boundary between what runs on your hardware and
 - The local Unix domain socket (used by the `mantler` CLI on the same machine)
 - The LAN model-sharing server on port 7433 — **disabled by default**, must be explicitly enabled
 
-The daemon only executes typed commands from a known allowlist. It cannot be instructed to run arbitrary shell commands. Full details: [Security & trust model](/docs/machines/security).
+The daemon only executes typed commands from a known allowlist. It cannot be instructed to run arbitrary shell commands. Full details: [Security & trust model](/machines/security).
 
 ---
 
@@ -51,7 +51,7 @@ The Mantler web app uses GitHub OAuth and email OTP login. Sessions are managed 
 ## Data handling
 
 - Mantler does not log inference request content. Logs contain token counts and latency, not prompts or completions.
-- `mantlerd` includes an audit log of every server-originated command on your machine (type, outcome, denial reason). See [Audit log](/docs/machines/security#audit-log).
+- `mantlerd` includes an audit log of every server-originated command on your machine (type, outcome, denial reason). See [Audit log](/machines/security#audit-log).
 - Per-stage audit rows are written for pipeline execution. These record stage type, machine, and timing — not content.
 
 ---
