@@ -1,0 +1,69 @@
+---
+title: Security
+description: How Mantler handles authentication, access control, and data in transit.
+---
+
+Mantler is designed with a clear boundary between what runs on your hardware and what runs on Mantler's servers. This page covers the security posture for each part of the system.
+
+---
+
+## Machine daemon (mantlerd)
+
+`mantlerd` runs on your hardware and communicates outbound-only with the control plane. It does not accept inbound connections except:
+
+- The local Unix domain socket (used by the `mantler` CLI on the same machine)
+- The LAN model-sharing server on port 7433 — **disabled by default**, must be explicitly enabled
+
+The daemon only executes typed commands from a known allowlist. It cannot be instructed to run arbitrary shell commands. Full details: [Security & trust model](/docs/machines/security).
+
+---
+
+## Inference traffic
+
+Inference requests from external clients flow through `api.mantler.ai` (the `mantler-api` gateway), then over an encrypted WebSocket relay to `mantlerd` on the target machine, then to the local runtime backend (Ollama, vLLM, etc.).
+
+For multi-stage pipeline execution:
+
+- Stage payloads are encrypted with ephemeral X25519 keys (AES-256-GCM).
+- Each machine holds independent keypairs for encryption (X25519) and signing (Ed25519).
+- Stage integrity is verified with Ed25519 signatures.
+- The relay (`mantler-api`) is blind to stage content — it sees routing and billing metadata only, not the payload.
+- Pipelines fail closed on contract violations.
+
+---
+
+## API keys
+
+External API keys use the prefix `mk_live_`. Each key is:
+
+- Bound to an organization
+- Optionally restricted to specific mantles, machines, or rate limits
+- Revocable immediately from the web app
+
+---
+
+## Authentication (web app)
+
+The Mantler web app uses GitHub OAuth and email OTP login. Sessions are managed by Supabase. All database access uses row-level security (RLS) — each user can only read and write records that belong to their organization.
+
+---
+
+## Data handling
+
+- Mantler does not log inference request content. Logs contain token counts and latency, not prompts or completions.
+- `mantlerd` includes an audit log of every server-originated command on your machine (type, outcome, denial reason). See [Audit log](/docs/machines/security#audit-log).
+- Per-stage audit rows are written for pipeline execution. These record stage type, machine, and timing — not content.
+
+---
+
+## What Mantler does not claim
+
+Mantler does not currently hold SOC 2, HIPAA, or other compliance certifications. If compliance requirements are a factor in your evaluation, contact us to discuss your specific needs.
+
+---
+
+## Reporting a vulnerability
+
+Do not report security vulnerabilities through public GitHub issues.
+
+Email **security@mantler.dev** with a description, reproduction steps, the affected version, and your severity assessment. We aim to acknowledge within 48 hours.

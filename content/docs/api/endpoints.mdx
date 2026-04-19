@@ -1,0 +1,150 @@
+---
+title: Endpoints
+description: Full request and response reference for the Mantler API.
+---
+
+Base URL: `https://api.mantler.ai`
+
+All endpoints that accept a body expect `Content-Type: application/json`.
+
+---
+
+## GET /health
+
+Gateway health check. No authentication required.
+
+**Response:**
+
+```json
+{ "status": "ok" }
+```
+
+---
+
+## GET /v1/models
+
+List the models available to your API key.
+
+**Request:**
+
+```http
+GET /v1/models
+Authorization: Bearer mk_live_YOUR_KEY
+```
+
+**Response:**
+
+```json
+{
+  "object": "list",
+  "data": [
+    {
+      "id": "llama3.1:8b",
+      "object": "model",
+      "created": 1713000000,
+      "owned_by": "mantler"
+    }
+  ]
+}
+```
+
+Each `id` is the model identifier to use in chat completions requests. Model IDs correspond to the model layer of a deployed mantle.
+
+---
+
+## POST /v1/chat/completions
+
+Generate a chat completion. Follows the [OpenAI chat completions spec](https://platform.openai.com/docs/api-reference/chat).
+
+**Request:**
+
+```http
+POST /v1/chat/completions
+Authorization: Bearer mk_live_YOUR_KEY
+Content-Type: application/json
+```
+
+```json
+{
+  "model": "llama3.1:8b",
+  "messages": [
+    { "role": "system", "content": "You are a helpful assistant." },
+    { "role": "user", "content": "What is the capital of France?" }
+  ],
+  "stream": false,
+  "temperature": 0.7,
+  "max_tokens": 512
+}
+```
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `model` | string | Yes | Model ID from `/v1/models` |
+| `messages` | array | Yes | Conversation history |
+| `stream` | boolean | No | Stream tokens as SSE. Default `false`. |
+| `temperature` | number | No | Sampling temperature (0–2). Default `1`. |
+| `max_tokens` | integer | No | Max tokens to generate. |
+| `top_p` | number | No | Nucleus sampling. Default `1`. |
+| `stop` | string\|array | No | Stop sequences. |
+
+**Non-streaming response:**
+
+```json
+{
+  "id": "chatcmpl-...",
+  "object": "chat.completion",
+  "created": 1713000000,
+  "model": "llama3.1:8b",
+  "choices": [
+    {
+      "index": 0,
+      "message": {
+        "role": "assistant",
+        "content": "The capital of France is Paris."
+      },
+      "finish_reason": "stop"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 24,
+    "completion_tokens": 9,
+    "total_tokens": 33
+  }
+}
+```
+
+**Streaming response** (`"stream": true`):
+
+Returns server-sent events (SSE). Each event is a `data:` line containing a partial completion object. The stream ends with `data: [DONE]`.
+
+```
+data: {"id":"chatcmpl-...","object":"chat.completion.chunk","choices":[{"delta":{"role":"assistant","content":"The"},"index":0}]}
+
+data: {"id":"chatcmpl-...","object":"chat.completion.chunk","choices":[{"delta":{"content":" capital"},"index":0}]}
+
+data: [DONE]
+```
+
+---
+
+## Error responses
+
+The API returns standard HTTP status codes with a JSON error body:
+
+```json
+{
+  "error": {
+    "message": "Invalid API key",
+    "type": "authentication_error",
+    "code": "invalid_api_key"
+  }
+}
+```
+
+| Status | Meaning |
+|--------|---------|
+| `401` | Invalid or missing API key |
+| `403` | Key does not have access to the requested model |
+| `404` | Model not found or not deployed |
+| `429` | Rate limit exceeded |
+| `503` | Machine offline or runtime unavailable |

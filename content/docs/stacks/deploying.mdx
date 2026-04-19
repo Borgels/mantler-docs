@@ -1,0 +1,46 @@
+---
+title: Deploying
+description: Deploy a stack to a machine and monitor its status.
+---
+
+<Callout type="info">
+  This page is a stub. Full documentation is coming soon.
+</Callout>
+
+Once a stack (mantle) is created in the Forge, you deploy it from the mantle detail page.
+
+## Deploy flow
+
+Clicking **Deploy** triggers the following sequence:
+
+1. The control plane sends commands to `mantlerd` on the target machine.
+2. The runtime is installed (if not already present).
+3. The model is pulled to the machine.
+4. If a **Portal** layer is included, the endpoint becomes active.
+
+You can monitor the deployment on the machine detail page in the web app, or with the CLI:
+
+```bash
+mantler runtime list
+mantler model list
+mantler info
+```
+
+## Endpoint activation
+
+When the Portal layer is active and the model is loaded, the mantle's model ID becomes available in `/v1/models` and accepts chat completions requests.
+
+## Redeploying and updating
+
+To update a running stack — for example to change the model or runtime version — edit the mantle in the Forge and redeploy. The daemon handles the transition, stopping the old model and starting the new one.
+
+## Telemetry
+
+`mantlerd` reports runtime and model telemetry back to the control plane during each check-in:
+
+- Runtime version and status
+- Model availability and load state
+- GPU memory usage
+- Tokens per second and time-to-first-token from recent requests
+
+This data is visible on the machine and mantle detail pages in the web app.

@@ -1,0 +1,145 @@
+---
+title: Security & trust model
+description: What the Mantler control plane can and cannot ask mantlerd to do, and how to verify releases.
+---
+
+`mantlerd` runs on your machine with elevated privileges and maintains a persistent connection to a remote control plane. This page covers the trust model, command boundaries, audit log, and release verification.
+
+---
+
+## Architecture boundary
+
+`mantlerd` is the on-machine agent. It does not contain the Mantler control-plane server. You configure the agent to point at a server URL (`--server` or `serverUrl` in `agent.json`). By default this is the Mantler hosted service, but you can point it at any compatible server — including a self-hosted one.
+
+This separation is intentional. You can inspect every command type, execution path, and network payload in the [public repository](https://github.com/Borgels/mantlerd).
+
+---
+
+## What the control plane can ask the agent to do
+
+The agent receives typed commands from the server during check-ins. All recognized command types are handled in `internal/commands/executor.go`. Unknown command types are explicitly rejected.
+
+**Runtime and model management**
+- `install_runtime` / `uninstall_runtime` / `restart_runtime`
+- `pull_model` / `start_model` / `stop_model` / `remove_model` / `build_model`
+- `install_tool` / `uninstall_tool`
+
+**Training**
+- `install_trainer` / `uninstall_trainer` / `start_training` / `stop_training` / `training_status` / `export_checkpoint`
+
+**Harnesses and orchestrators**
+- `run_harness_exec` — run a supported AI coding agent (Codex CLI, Goose, Claude Code, Aider, etc.)
+- `harness_login` / `sync_harnesses`
+- `run_orchestrator_exec` — run an orchestrator binary (LangChain, AutoGen, etc.)
+
+**Operations**
+- `health_check` / `model_eval` / `nccl_test` / `cancel_command`
+
+**Agent lifecycle**
+- `update_agent` — download and install a newer binary (checksum-verified)
+- `self_shutdown` — shut down the machine (only if the operator has configured this)
+- `uninstall_agent`
+
+---
+
+## What the control plane cannot do
+
+- Execute arbitrary shell commands. There is no `exec_shell` or equivalent; unrecognised command types are rejected.
+- Access the local filesystem beyond the paths the agent explicitly manages (`/etc/mantler`, `~/.mantler`, `/var/lib/mantler`, and configured model/runtime directories).
+- Access other network services on your machine other than through the relay proxy to known runtime ports (Ollama, vLLM, etc.).
+- Modify config files or system state outside managed runtime and model directories.
+
+---
+
+## Relay and pipeline traffic
+
+The agent may receive relay messages over a WebSocket connection. These serve two purposes:
+
+1. **Localhost proxy** — forwarding inference requests to local runtime backends (e.g. `http://127.0.0.1:11434`). Only requests to known runtime ports are processed.
+2. **Pipeline stage requests** — encrypted, signed stage payloads for strategy pipeline execution. Stage payloads must be encrypted to the machine's local Ed25519 stage keypair. The server cannot inject unsigned pipeline work.
+
+---
+
+## Local policy controls
+
+Set `trustMode` in `agent.json` to restrict which remote commands the agent will execute.
+
+**`managed`** (default): all command types are permitted.
+
+**`restricted`**: destructive commands are denied unless explicitly listed in `allowedCommands`.
+
+```json
+{
+  "trustMode": "restricted",
+  "allowedCommands": ["pull_model", "start_model", "stop_model"]
+}
+```
+
+You can also disable the relay proxy entirely:
+
+```json
+{
+  "disableRelayProxy": true
+}
+```
+
+---
+
+## Audit log
+
+The agent writes a newline-delimited JSON audit log of every server-originated command.
+
+Default paths:
+
+| Context | Path |
+|---------|------|
+| Linux (root) | `/var/log/mantler/audit.log` |
+| Linux (non-root) / macOS | `~/.mantler/audit.log` |
+
+Each line records the command type, outcome, whether it was destructive, and any denial or failure reason.
+
+```bash
+mantler audit                 # last 50 events
+mantler audit --lines 100
+mantler audit --denied        # only denied or failed events
+mantler audit --json          # raw JSON
+```
+
+---
+
+## Release verification
+
+Binary releases are published to [GitHub Releases](https://github.com/Borgels/mantlerd/releases). Each release includes:
+
+- `checksums.txt` — SHA-256 hashes for all platform binaries
+- SLSA build provenance attestation via `actions/attest-build-provenance`
+
+**Verify a binary manually:**
+
+```bash
+curl -LO https://github.com/Borgels/mantlerd/releases/download/vX.Y.Z/mantlerd-linux-amd64
+curl -LO https://github.com/Borgels/mantlerd/releases/download/vX.Y.Z/checksums.txt
+grep mantlerd-linux-amd64 checksums.txt | sha256sum --check
+```
+
+**Verify SLSA provenance (requires the `gh` CLI):**
+
+```bash
+gh attestation verify mantlerd-linux-amd64 --owner Borgels
+```
+
+The `mantler update apply` command and the daemon's `update_agent` path both verify the SHA-256 checksum before replacing the running binary. Neither path pipes a remote shell script.
+
+---
+
+## Reporting a vulnerability
+
+Please do not report security vulnerabilities through public GitHub issues.
+
+Email **security@mantler.dev** with:
+- A description of the vulnerability
+- Steps to reproduce
+- The version of `mantlerd` you are running (`mantler version`)
+- Your assessment of severity and exploitability
+
+We aim to acknowledge reports within 48 hours and provide a fix timeline within 7 days for critical issues.

@@ -1,0 +1,41 @@
+---
+title: Usage & limits
+description: Usage logging and rate limits for the Mantler API.
+---
+
+## Usage logging
+
+Every request through `api.mantler.ai` is logged with:
+
+- Timestamp
+- API key identifier (not the key itself)
+- Model and mantle ID
+- Token counts (prompt, completion, total)
+- Latency
+
+Usage is visible on the **Usage** page in the Mantler web app, broken down by key and model.
+
+---
+
+## Rate limits
+
+Rate limits are applied per API key. Default limits are set at the org level.
+
+When creating or editing a key, you can set lower per-key limits:
+
+- Requests per minute (RPM)
+- Tokens per minute (TPM)
+
+When a limit is exceeded, the API returns `429 Too Many Requests`. The response includes a `Retry-After` header indicating how many seconds to wait.
+
+---
+
+## Token counting
+
+Token counts in responses are approximate and depend on the runtime. For Ollama and llama.cpp backed models, the values reported in `usage.prompt_tokens` and `usage.completion_tokens` are the counts returned by the runtime.
+
+---
+
+## Coming soon
+
+Per-key spend limits and budget alerts are planned. Check the [changelog](https://mantler.ai) for updates.

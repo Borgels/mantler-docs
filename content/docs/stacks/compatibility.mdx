@@ -1,0 +1,42 @@
+---
+title: Compatibility
+description: How Mantler resolves whether a stack combination will work on your hardware.
+---
+
+<Callout type="info">
+  This page is a stub. Full documentation is coming soon.
+</Callout>
+
+Mantler uses a deterministic compatibility engine to resolve whether a given machine + runtime + model (+ optional layers) combination will work before you deploy.
+
+## How it works
+
+The engine combines several sources of evidence:
+
+| Source | Confidence |
+|--------|-----------|
+| Curated rules | High |
+| Learned recipes from successful deployments | Medium–high |
+| Community outcome telemetry | Medium |
+| Research-extracted facts (from GitHub issues, release notes, docs) | Lower, until verified |
+
+Results include:
+
+- **Score** — overall compatibility rating
+- **Blockers** — hard failures that prevent the combination from working
+- **Warnings** — potential issues that may not prevent operation but should be noted
+- **Constraint chain** — the rules that produced the result
+- **Prerequisites** — what the machine needs before the combination can be deployed
+- **Alternatives** — suggested substitutions that would resolve blockers
+
+## In the Forge
+
+The compatibility panel in the Forge updates in real time as you add or change layers. Blocked combinations show the specific rule that prevents the selection.
+
+## Via the API
+
+The compatibility engine is also accessible programmatically:
+
+- `POST /api/compatibility/resolve` — check a specific combination
+- `POST /api/compatibility/explore` — discover optimal compositions
+- `GET /api/recommendations` — constraint-based recommendation endpoint (also available via `mantler recommend` CLI)

@@ -1,0 +1,117 @@
+---
+title: Install
+description: Install mantlerd on Linux or macOS using the release installer script.
+---
+
+`mantlerd` is distributed as a pre-built binary via GitHub Releases. The easiest way to install it is with the release installer script.
+
+---
+
+## Linux (recommended)
+
+Run as root:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Borgels/mantlerd/master/scripts/install.sh | \
+  sudo sh -s -- \
+  --token YOUR_MACHINE_TOKEN \
+  --machine MACHINE_ID \
+  --server https://control.mantler.ai
+```
+
+For a self-hosted or non-HTTPS control plane:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Borgels/mantlerd/master/scripts/install.sh | \
+  sudo sh -s -- \
+  --token YOUR_MACHINE_TOKEN \
+  --machine MACHINE_ID \
+  --server http://control.local:3400 \
+  --insecure
+```
+
+### What the installer sets up
+
+- Installs `/usr/local/bin/mantlerd`
+- Creates `/usr/local/bin/mantler` as a symlink (the CLI)
+- Writes the config file to `/etc/mantler/agent.json` (mode `0600`)
+- Installs a systemd unit at `/etc/systemd/system/mantlerd.service`
+- Starts and enables the service
+
+Check status after install:
+
+```bash
+systemctl status mantlerd
+mantler doctor
+```
+
+---
+
+## macOS
+
+No `sudo` needed for the service setup on macOS:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Borgels/mantlerd/master/scripts/install.sh | \
+  sh -s -- \
+  --token YOUR_MACHINE_TOKEN \
+  --machine MACHINE_ID \
+  --server https://control.mantler.ai
+```
+
+### What the installer sets up
+
+- Installs `/usr/local/bin/mantlerd`
+- Creates `/usr/local/bin/mantler` as a symlink
+- Writes config to `~/.mantler/agent.json`
+- Installs a launchd agent at `~/Library/LaunchAgents/com.mantler.mantlerd.plist`
+- Starts the daemon via launchd
+
+Check status after install:
+
+```bash
+launchctl print "gui/$(id -u)/com.mantler.mantlerd"
+mantler doctor
+```
+
+---
+
+## Where to find your token and machine ID
+
+Open the **Machines** page in the Mantler web app and click **Add machine**. The token and machine ID are generated there.
+
+---
+
+## Verifying the install
+
+```bash
+mantler version          # print version
+mantler doctor           # connectivity and runtime checks
+mantler info             # show config, runtimes, model-sharing status
+```
+
+If `mantler doctor` reports the machine as online, it is connected to the control plane and ready to receive commands.
+
+---
+
+## Updating mantlerd
+
+```bash
+mantler update check     # check for a newer release
+mantler update apply     # download and install (prompts for confirmation)
+mantler update apply --yes  # non-interactive
+```
+
+The update path verifies the SHA-256 checksum of the downloaded binary before replacing the running one. See [Release verification](/docs/machines/security#release-verification) for details.
+
+---
+
+## Uninstalling
+
+Run the uninstall script from the releases page, or use the CLI:
+
+```bash
+mantler uninstall
+```
+
+This removes the binary, config file, and service unit.

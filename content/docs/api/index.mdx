@@ -1,0 +1,38 @@
+---
+title: API
+description: Mantler exposes deployed stacks as an OpenAI-compatible /v1 API.
+---
+
+The Mantler API is an OpenAI-compatible gateway that routes requests to deployed mantles on your machines.
+
+**Base URL:** `https://api.mantler.ai/v1`
+
+---
+
+## Compatibility
+
+The API follows the OpenAI chat completions spec. Any client that works with OpenAI works with Mantler — no changes needed beyond the base URL and API key.
+
+**Cursor:** Settings → OpenAI → set base URL to `https://api.mantler.ai/v1`
+
+**Continue (VS Code):** In `config.json`, set `apiBase: "https://api.mantler.ai/v1"`
+
+---
+
+## Supported endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /health` | Gateway health check |
+| `GET /v1/models` | List deployed models available to your key |
+| `POST /v1/chat/completions` | Generate a chat completion |
+
+`POST /v1/completions` (legacy completions format) returns an unsupported endpoint error.
+
+---
+
+## In this section
+
+- [Authentication](/docs/api/authentication) — API key format, scopes, org binding
+- [Endpoints](/docs/api/endpoints) — full request/response spec for each endpoint
+- [Usage & limits](/docs/api/usage-and-limits) — usage logging and rate limits

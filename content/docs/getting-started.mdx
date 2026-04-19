@@ -1,0 +1,110 @@
+---
+title: Getting started
+description: Register a machine, build a stack, and make your first API call.
+---
+
+This guide walks through the full path from zero to a working inference endpoint:
+
+1. Register a machine (install `mantlerd`)
+2. Build a stack in the Forge
+3. Deploy the stack to your machine
+4. Call the endpoint
+
+---
+
+## 1. Register a machine
+
+`mantlerd` is the daemon that runs on each worker machine. Install it using the release script.
+
+**Linux (recommended — run as root):**
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Borgels/mantlerd/master/scripts/install.sh | \
+  sudo sh -s -- \
+  --token YOUR_MACHINE_TOKEN \
+  --machine MACHINE_ID \
+  --server https://control.mantler.ai
+```
+
+**macOS:**
+
+```bash
+curl -sSL https://raw.githubusercontent.com/Borgels/mantlerd/master/scripts/install.sh | \
+  sh -s -- \
+  --token YOUR_MACHINE_TOKEN \
+  --machine MACHINE_ID \
+  --server https://control.mantler.ai
+```
+
+Your machine token and ID come from the **Machines** page in the Mantler web app — add a machine there to generate them.
+
+After installation, verify the daemon is running:
+
+```bash
+mantler doctor
+```
+
+The machine will appear as online in the web app within a few seconds.
+
+---
+
+## 2. Build a stack in the Forge
+
+Open the **Forge** in the Mantler web app. A stack (mantle) is built from layers:
+
+| Layer | Role | Required |
+|-------|------|----------|
+| Anvil | The machine to deploy to | Yes |
+| Potion | Inference runtime (Ollama, vLLM, llama.cpp, MLX, …) | Yes |
+| Spellbook | The language model | Yes |
+| Gauntlet | Prompt routing / tool wrapper | Optional |
+| Orb | Multi-step orchestrator | Optional |
+| Portal | OpenAI-compatible endpoint exposure | Optional, but needed for API access |
+
+Select your machine from the **Anvil** slot, pick a runtime, pick a model. The compatibility panel shows in real time whether the combination will work on your hardware.
+
+Add a **Portal** layer to expose the stack as an API endpoint.
+
+Click **Forge** to create the mantle.
+
+---
+
+## 3. Deploy the stack
+
+From the mantle detail page, click **Deploy**. The Mantler control plane sends a sequence of commands to `mantlerd` on your machine: install the runtime, pull the model, configure the endpoint.
+
+You can monitor progress on the machine detail page or with:
+
+```bash
+mantler info
+mantler runtime list
+mantler model list
+```
+
+---
+
+## 4. Make your first API call
+
+Once deployed, the mantle's Portal layer is active. From your API keys page, create an `mk_live_` key.
+
+Test with curl:
+
+```bash
+curl https://api.mantler.ai/v1/chat/completions \
+  -H "Authorization: Bearer mk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "YOUR_MODEL_ID",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+To use in Cursor or VS Code extensions, set the OpenAI base URL to `https://api.mantler.ai/v1` and use your API key.
+
+---
+
+## What's next
+
+- [Machine configuration](/docs/machines/configuration) — tune intervals, trust mode, allowed commands
+- [CLI reference](/docs/machines/cli) — all `mantler` subcommands
+- [API reference](/docs/api/endpoints) — full request/response spec

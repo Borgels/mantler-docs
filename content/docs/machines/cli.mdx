@@ -1,0 +1,110 @@
+---
+title: CLI reference
+description: Full reference for the mantler CLI — the command-line interface for mantlerd.
+---
+
+The `mantler` binary is installed alongside `mantlerd` as a symlink. It provides a local CLI for controlling the daemon, inspecting state, and managing the config.
+
+---
+
+## General
+
+```bash
+mantler --help           # print help
+mantler version          # print daemon version
+```
+
+---
+
+## Health and diagnostics
+
+```bash
+mantler doctor           # run connectivity and runtime checks
+mantler info             # print config summary, runtime and model-sharing state
+mantler checkin          # trigger an immediate check-in (for debugging)
+```
+
+---
+
+## Daemon lifecycle
+
+```bash
+mantler start            # start the daemon (if not already running as a service)
+```
+
+When installed via the installer script, the daemon is managed by systemd (Linux) or launchd (macOS) and starts automatically. Use `mantler start` only when running outside of a service manager.
+
+---
+
+## Updates
+
+```bash
+mantler update check     # check whether a newer release is available
+mantler update apply     # download and install the latest release (prompts for confirmation)
+mantler update apply --yes  # non-interactive
+```
+
+The update path verifies the SHA-256 checksum before replacing the binary.
+
+---
+
+## Runtimes
+
+```bash
+mantler runtime list     # list installed runtimes and their status
+```
+
+---
+
+## Models
+
+```bash
+mantler model list       # list models available on local runtimes
+```
+
+---
+
+## Audit log
+
+```bash
+mantler audit                    # show last 50 audit events
+mantler audit --lines 100        # show last 100 events
+mantler audit --denied           # show only denied or failed commands
+mantler audit --json             # output raw newline-delimited JSON
+```
+
+The audit log records every server-originated command with its type, outcome, and any denial reason. See [Security & trust model](/docs/machines/security#audit-log) for details.
+
+---
+
+## Recommendations
+
+```bash
+mantler recommend                # get stack recommendations for this machine
+mantler recommend --runtime ollama
+mantler recommend --model llama3.1:70b
+mantler recommend --json         # raw JSON output
+mantler recommend --explain      # show constraint notes per recommendation
+mantler setup --recommended      # apply the top recommendation automatically
+```
+
+---
+
+## Config
+
+```bash
+mantler config show
+mantler config path
+mantler config set server https://control.example.com
+mantler config set interval 30s
+```
+
+See [Configuration](/docs/machines/configuration) for all configurable fields.
+
+---
+
+## Uninstall
+
+```bash
+mantler uninstall        # remove the binary, config, and service unit
+```

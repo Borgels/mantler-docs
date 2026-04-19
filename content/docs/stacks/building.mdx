@@ -1,0 +1,29 @@
+---
+title: Building stacks
+description: How to compose a stack using the Forge.
+---
+
+<Callout type="info">
+  This page is a stub. Full documentation is coming soon.
+</Callout>
+
+The **Forge** is the visual builder for composing stacks. It is the primary surface in the Mantler web app.
+
+## The slot model
+
+Each stack is built by filling layer slots left to right:
+
+1. Pick an **Anvil** (machine) from your registered machines.
+2. Pick a **Potion** (runtime). The palette filters to runtimes known to work on the selected machine.
+3. Pick a **Spellbook** (model). The palette filters to models compatible with the selected runtime and machine.
+4. Optionally add **Gauntlet** (harness), **Orb** (orchestrator), and **Portal** (endpoint) layers.
+
+The compatibility panel updates in real time as you make selections. When the combination is valid and all required layers are filled, the **Forge** button activates.
+
+## Saving and naming
+
+Give your stack a name before forging. Names are visible in the workbench and in the `/v1/models` API response.
+
+## What happens when you forge
+
+Clicking **Forge** creates the mantle record. The stack is not deployed yet — deployment is a separate step. See [Deploying](/docs/stacks/deploying).

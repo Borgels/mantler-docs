@@ -1,0 +1,31 @@
+---
+title: Introduction
+description: Mantler is a workbench for composing, deploying, and operating AI inference stacks on hardware you control.
+---
+
+Mantler lets you build **stacks** (called mantles) — validated combinations of machine, runtime, model, and optional layers — deploy them to your hardware, and expose them as OpenAI-compatible inference endpoints.
+
+## What Mantler is
+
+A mantle is a composition. You pick a machine, an inference runtime (Ollama, vLLM, llama.cpp, MLX, etc.), a model, and optional wiring layers. Mantler resolves compatibility in real time and deploys the whole thing to the target machine.
+
+Once deployed, a mantle is accessible as a standard `/v1/chat/completions` endpoint. Any client that speaks OpenAI — Cursor, Continue, VS Code extensions, custom scripts — works without modification.
+
+## How the system is structured
+
+Three components work together:
+
+| Component | What it does |
+|-----------|-------------|
+| **Mantler** (web app) | Visual workbench — build and manage stacks, view machine state, manage API keys |
+| **mantlerd** | Daemon that runs on each worker machine; receives commands, manages runtimes and models, relays inference traffic |
+| **mantler-api** | OpenAI-compatible gateway — authenticates requests, routes them to the right machine |
+
+You interact with the web app. `mantlerd` and `mantler-api` run in the background.
+
+## Quick orientation
+
+- **New to Mantler?** Start with [Getting started](/docs/getting-started).
+- **Setting up a machine?** See [Installing mantlerd](/docs/machines/install).
+- **Using the API?** See [Authentication](/docs/api/authentication) and [Endpoints](/docs/api/endpoints).
+- **Security questions?** See the [Security overview](/docs/security).

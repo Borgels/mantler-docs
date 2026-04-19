@@ -1,0 +1,90 @@
+---
+title: Authentication
+description: Mantler API keys, their format, and how they are scoped.
+---
+
+All requests to `api.mantler.ai` must include an API key in the `Authorization` header.
+
+```http
+Authorization: Bearer mk_live_YOUR_KEY
+```
+
+---
+
+## Key format
+
+Live API keys use the prefix `mk_live_`. Keys are generated from the **API keys** page in the Mantler web app.
+
+---
+
+## Org scoping
+
+Each API key is bound to an organization. It can only access mantles and machines that belong to that org. Keys are not transferable across orgs.
+
+---
+
+## Key restrictions
+
+When creating a key, you can optionally restrict it to:
+
+- Specific mantles (by mantle ID)
+- Specific machines
+- A rate limit (requests per minute / tokens per minute)
+
+A key with no restrictions has access to all deployed mantles in the org.
+
+---
+
+## Revoking a key
+
+Keys can be revoked at any time from the web app. Revoked keys are rejected immediately at the gateway — there is no grace period.
+
+---
+
+## Using your key
+
+**curl:**
+
+```bash
+curl https://api.mantler.ai/v1/chat/completions \
+  -H "Authorization: Bearer mk_live_YOUR_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "YOUR_MODEL_ID",
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+```
+
+**Python (openai SDK):**
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="mk_live_YOUR_KEY",
+    base_url="https://api.mantler.ai/v1",
+)
+
+response = client.chat.completions.create(
+    model="YOUR_MODEL_ID",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(response.choices[0].message.content)
+```
+
+**Node.js (openai SDK):**
+
+```typescript
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  apiKey: 'mk_live_YOUR_KEY',
+  baseURL: 'https://api.mantler.ai/v1',
+});
+
+const response = await client.chat.completions.create({
+  model: 'YOUR_MODEL_ID',
+  messages: [{ role: 'user', content: 'Hello' }],
+});
+console.log(response.choices[0].message.content);
+```

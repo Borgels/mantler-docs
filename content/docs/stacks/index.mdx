@@ -1,0 +1,29 @@
+---
+title: Stacks
+description: A stack (mantle) is a validated composition of machine, runtime, model, and optional layers.
+---
+
+A **stack** — called a mantle in the UI — is the central object in Mantler. It describes a complete inference setup: which machine to run on, which inference runtime to use, which model to load, and optionally how to expose it and wrap it with tooling.
+
+## Layers
+
+| Layer | Role | Required |
+|-------|------|----------|
+| **Anvil** | The target machine | Yes |
+| **Potion** | Inference runtime (Ollama, vLLM, llama.cpp, MLX, TensorRT-LLM, …) | Yes |
+| **Spellbook** | The language model | Yes |
+| **Gauntlet** | Prompt router / tool wrapper (harness) | Optional |
+| **Orb** | Multi-step orchestrator (LangChain, AutoGen, etc.) | Optional |
+| **Portal** | OpenAI-compatible endpoint exposure | Optional |
+
+## How stacks are built
+
+Stacks are composed in **The Forge** — the visual builder in the Mantler web app. You select a layer combination and the compatibility engine resolves in real time whether the combination will work on your hardware.
+
+No AI is in the composition loop. Compatibility is determined by curated rules, learned recipes from successful deployments, and community outcome telemetry.
+
+## In this section
+
+- [Building stacks](/docs/stacks/building) — how to use the Forge
+- [Compatibility](/docs/stacks/compatibility) — how compatibility resolution works
+- [Deploying](/docs/stacks/deploying) — deploy a stack and monitor its status

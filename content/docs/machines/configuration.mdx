@@ -1,0 +1,113 @@
+---
+title: Configuration
+description: Configure mantlerd via the agent.json config file or the mantler config CLI.
+---
+
+`mantlerd` reads its configuration from a JSON file at startup.
+
+**Default paths:**
+
+| Context | Path |
+|---------|------|
+| Linux (root) | `/etc/mantler/agent.json` |
+| Linux (non-root) / macOS | `~/.mantler/agent.json` |
+
+---
+
+## Core fields
+
+```json
+{
+  "serverUrl": "https://control.mantler.ai",
+  "token": "...",
+  "machineId": "...",
+  "interval": "30s"
+}
+```
+
+| Field | Description |
+|-------|-------------|
+| `serverUrl` | Control-plane URL. Defaults to the Mantler hosted service. |
+| `token` | Machine-scoped bearer token. Generated when you add a machine in the web app. |
+| `machineId` | Stable machine identifier. Generated alongside the token. |
+| `interval` | Check-in interval. Default `30s`. |
+
+---
+
+## Trust mode
+
+`trustMode` controls which remote commands `mantlerd` will execute.
+
+**`managed`** (default): all command types are permitted.
+
+**`restricted`**: destructive commands (runtime installation, harness/orchestrator execution, agent update, shutdown, etc.) are denied unless explicitly listed in `allowedCommands`.
+
+```json
+{
+  "serverUrl": "https://control.mantler.ai",
+  "token": "...",
+  "machineId": "...",
+  "trustMode": "restricted",
+  "allowedCommands": ["pull_model", "start_model", "stop_model"]
+}
+```
+
+See [Security & trust model](/docs/machines/security) for the full list of command types.
+
+---
+
+## Disabling the relay proxy
+
+By default, `mantlerd` proxies inference requests from the relay to local runtime backends (Ollama on `127.0.0.1:11434`, etc.). To disable this:
+
+```json
+{
+  "disableRelayProxy": true
+}
+```
+
+---
+
+## LAN model sharing
+
+When `allowModelSharing` is `true`, the daemon starts a transfer server on port 7433 that lets other machines on the same LAN pull models from this one. Each transfer request carries an HMAC-signed token distributed by the control plane.
+
+Disabled by default. Only enable if you actually need cross-machine model sharing.
+
+```json
+{
+  "allowModelSharing": true
+}
+```
+
+Verify whether it is active:
+
+```bash
+mantler info              # shows model-sharing status
+ss -tlnp | grep 7433      # confirm whether the port is listening
+```
+
+---
+
+## Disabling the local socket
+
+The daemon creates a Unix domain socket that the `mantler` CLI uses to delegate operations to the already-running daemon (useful when the daemon runs as root but you want to run the CLI as a normal user). Disable it with:
+
+```json
+{
+  "disableLocalSocket": true
+}
+```
+
+---
+
+## Managing config via the CLI
+
+```bash
+mantler config show                              # print current config
+mantler config path                              # print config file path
+mantler config set server https://control.example.com
+mantler config set interval 60s
+```
+
+Changes written via `mantler config set` take effect on the next daemon restart.

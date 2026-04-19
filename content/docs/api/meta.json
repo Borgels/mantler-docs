@@ -1,0 +1,9 @@
+{
+  "title": "API",
+  "pages": [
+    "index",
+    "authentication",
+    "endpoints",
+    "usage-and-limits"
+  ]
+}

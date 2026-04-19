@@ -1,0 +1,32 @@
+---
+title: Machines
+description: Machines are the hardware that runs your stacks. Each machine runs the mantlerd daemon.
+---
+
+A machine in Mantler is any hardware — local workstation, cloud VM, bare-metal server — that has `mantlerd` installed and running.
+
+## What mantlerd does
+
+`mantlerd` is the open-source daemon that runs on each worker machine. It:
+
+- Checks in with the Mantler control plane periodically via HTTPS
+- Executes typed commands sent by the control plane (pull a model, start a runtime, etc.)
+- Reports hardware capabilities (GPUs, RAM, installed runtimes, deployed mantles) back to the control plane
+- Relays inference traffic between external clients and local runtime backends
+
+The daemon communicates only with the server URL you configure. By default this is the Mantler hosted service, but you can point it at any compatible control-plane URL, including a self-hosted one.
+
+The full source is available at [github.com/Borgels/mantlerd](https://github.com/Borgels/mantlerd).
+
+## Architecture boundary
+
+`mantlerd` is the public, open-source half of the Mantler system. The control-plane server is separate and private. This separation is intentional — you can read every command type, execution path, and network payload in the daemon's repository.
+
+See the [Security & trust model](/docs/machines/security) page for a full account of what the control plane is and is not allowed to ask the daemon to do.
+
+## In this section
+
+- [Install](/docs/machines/install) — install `mantlerd` on Linux or macOS
+- [Configuration](/docs/machines/configuration) — config file, CLI config commands, trust mode
+- [CLI reference](/docs/machines/cli) — all `mantler` subcommands
+- [Security & trust model](/docs/machines/security) — command allowlists, audit log, release verification
